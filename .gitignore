@@ -1,0 +1,40 @@
+# Environment files
+backend/.env
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+
+# Dependencies
+backend/vendor/
+backend/node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Laravel
+backend/storage/*.key
+backend/storage/logs/*.log
+backend/bootstrap/cache/*
+!backend/storage/.gitkeep
+!backend/bootstrap/cache/.gitkeep
+
+# Laravel SQLite Database
+backend/database/*.sqlite
+backend/database/*.sqlite-journal
+
+# Claude Code Plans
+.claude/
+
+# Temporary files
+*.tmp
+*.temp

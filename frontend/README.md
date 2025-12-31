@@ -21,15 +21,11 @@ Frontend akan berjalan di: **http://localhost:5173**
 
 **PENTING:** Pastikan backend API sudah running di `http://localhost:8000`
 
-## Demo Accounts
+## Demo Account
 
 **Admin:**
-- Email: `admin@scorehub.com`
-- Password: `password123`
-
-**User:**
-- Email: `user@scorehub.com`
-- Password: `password123`
+- Username: `admin@scorehub.com`
+- Password: `123123`
 
 ## Features
 

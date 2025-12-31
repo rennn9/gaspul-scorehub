@@ -1,290 +1,201 @@
 # Gaspul ScoreHub
 
-Sistem web untuk mengelola pencatatan skor pertandingan event.
+Sistem Manajemen Skor Pertandingan untuk HAB Kemenag 2026 - Peringatan Hari Amal Bhakti ke-80 Kementerian Agama.
 
 ## Tech Stack
 
-- **Backend**: Laravel 12 + MySQL
-- **Frontend**: React 18 + Vite + Tailwind CSS
-- **Authentication**: Laravel Sanctum
-- **State Management**: Zustand
+### Backend
+- Laravel 11
+- MySQL
+- Laravel Sanctum (API Authentication)
 
-## Struktur Database
-
-### Tabel Utama
-- `events` - Daftar event/kejuaraan
-- `teams` - Daftar tim peserta
-- `matches` - Pertandingan + jadwal + skor
-- `sports_types` - Jenis cabang lomba
-- `users` - User dan role management
-
-## Setup Backend
-
-### Prerequisites
-- PHP >= 8.2
-- Composer
-- MySQL >= 8.0
-- Node.js >= 18 (untuk frontend)
-
-### Langkah Instalasi
-
-1. **Clone atau masuk ke direktori project**
-   ```bash
-   cd backend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   composer install
-   ```
-
-3. **Copy file environment**
-   ```bash
-   cp .env.example .env
-   ```
-
-4. **Generate application key**
-   ```bash
-   php artisan key:generate
-   ```
-
-5. **Konfigurasi database**
-
-   Buat database MySQL dengan nama `gaspul_scorehub`, kemudian update file `.env`:
-   ```
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=gaspul_scorehub
-   DB_USERNAME=root
-   DB_PASSWORD=your_password
-   ```
-
-6. **Jalankan migration**
-   ```bash
-   php artisan migrate
-   ```
-
-7. **Jalankan seeder untuk data contoh** (opsional)
-   ```bash
-   php artisan db:seed
-   ```
-
-8. **Jalankan server development**
-   ```bash
-   php artisan serve
-   ```
-
-   Backend API akan berjalan di `http://localhost:8000`
-
-## Setup Frontend
-
-### Langkah Instalasi
-
-1. **Masuk ke folder frontend**
-   ```bash
-   cd frontend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Jalankan development server**
-   ```bash
-   npm run dev
-   ```
-
-   Frontend akan berjalan di `http://localhost:5173`
-
-**PENTING:** Pastikan backend API sudah running sebelum menjalankan frontend!
-
-## Data Demo
-
-Setelah menjalankan seeder, Anda dapat login dengan kredensial berikut:
-
-**Admin Account:**
-- Email: `admin@scorehub.com`
-- Password: `password123`
-- Role: `admin` (Full access ke semua fitur)
-
-**User Account:**
-- Email: `user@scorehub.com`
-- Password: `password123`
-- Role: `user` (Read-only access)
-
-Data demo yang sudah dibuat:
-- 1 Event (Porseni 2025)
-- 3 Sports Types (Sepak Bola, Basket, Voli)
-- 4 Teams (Tim Merah, Biru, Hijau, Kuning)
-- 5 Matches dengan berbagai status (finished, ongoing, scheduled)
-
-## API Endpoints
-
-### Public Endpoints (Tanpa Authentication)
-
-#### Authentication
-- `POST /api/register` - Registrasi user baru
-- `POST /api/login` - Login user
-
-#### Events
-- `GET /api/events` - List semua events
-- `GET /api/events/{id}` - Detail event
-
-#### Teams
-- `GET /api/teams` - List semua teams
-- `GET /api/teams/{id}` - Detail team
-- `GET /api/teams?event_id={id}` - Filter teams by event
-
-#### Matches
-- `GET /api/matches` - List semua matches
-- `GET /api/matches/{id}` - Detail match
-- `GET /api/matches?event_id={id}` - Filter by event
-- `GET /api/matches?status={status}` - Filter by status (scheduled/ongoing/finished)
-- `GET /api/matches?date={date}` - Filter by date
-
-#### Sports Types
-- `GET /api/sports-types` - List semua jenis olahraga
-- `GET /api/sports-types/{id}` - Detail sports type
-
-### Protected Endpoints (Require Authentication)
-
-Header yang diperlukan:
-```
-Authorization: Bearer {access_token}
-```
-
-#### User
-- `POST /api/logout` - Logout user
-- `GET /api/me` - Get current user info
-
-#### Events (Admin only)
-- `POST /api/events` - Create event
-- `PUT /api/events/{id}` - Update event
-- `DELETE /api/events/{id}` - Delete event
-
-#### Teams (Admin only)
-- `POST /api/teams` - Create team
-- `PUT /api/teams/{id}` - Update team
-- `DELETE /api/teams/{id}` - Delete team
-
-#### Matches (Admin only)
-- `POST /api/matches` - Create match
-- `PUT /api/matches/{id}` - Update match
-- `PATCH /api/matches/{id}/score` - Update match score
-- `DELETE /api/matches/{id}` - Delete match
-
-#### Sports Types (Admin only)
-- `POST /api/sports-types` - Create sports type
-- `PUT /api/sports-types/{id}` - Update sports type
-- `DELETE /api/sports-types/{id}` - Delete sports type
-
-## Contoh Request
-
-### Register
-```bash
-POST /api/register
-Content-Type: application/json
-
-{
-  "name": "Admin User",
-  "email": "admin@example.com",
-  "password": "password123",
-  "password_confirmation": "password123"
-}
-```
-
-### Login
-```bash
-POST /api/login
-Content-Type: application/json
-
-{
-  "email": "admin@example.com",
-  "password": "password123"
-}
-```
-
-### Create Event
-```bash
-POST /api/events
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "name": "Porseni 2025",
-  "description": "Event olahraga tahunan",
-  "start_date": "2025-01-15",
-  "end_date": "2025-01-20",
-  "is_active": true
-}
-```
-
-### Create Match
-```bash
-POST /api/matches
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "event_id": 1,
-  "sports_type_id": 1,
-  "team_a_id": 1,
-  "team_b_id": 2,
-  "match_date": "2025-01-16 14:00:00",
-  "location": "Lapangan Utama",
-  "status": "scheduled"
-}
-```
-
-### Update Match Score
-```bash
-PATCH /api/matches/1/score
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "team_a_score": 3,
-  "team_b_score": 2,
-  "status": "finished"
-}
-```
+### Frontend
+- React 19
+- Vite
+- React Router DOM
+- Zustand (State Management)
+- Tailwind CSS v4
+- Axios
 
 ## Fitur Utama
 
-### Admin
-- Manage events/kejuaraan
-- Manage teams
-- Penjadwalan pertandingan
-- Input dan update skor
-- Manage status pertandingan (scheduled → ongoing → finished)
-- Manage sports types
+- **Event Management**: Kelola event dan turnamen olahraga
+- **Team Management**: Manajemen tim peserta
+- **Match Scoring**: Pencatatan skor pertandingan secara real-time
+- **Sports Types**: Kelola berbagai jenis cabang olahraga
+- **Leaderboard**: Sistem peringkat berdasarkan hasil pertandingan
+- **User Management**: Kelola akun admin
+- **Authentication**: Sistem login berbasis username
 
-### User Publik
-- Lihat jadwal pertandingan
-- Lihat hasil pertandingan
-- Filter berdasarkan event, tanggal, status
+## Struktur Project
+
+```
+gaspul-scorehub/
+├── backend/          # Laravel 11 API
+│   ├── app/
+│   ├── database/
+│   ├── routes/
+│   └── ...
+└── frontend/         # React 19 Application
+    ├── src/
+    ├── public/
+    └── ...
+```
+
+## Instalasi
+
+### Prerequisites
+
+- PHP 8.2 atau lebih tinggi
+- Composer
+- Node.js 18 atau lebih tinggi
+- MySQL 8.0 atau lebih tinggi
+
+### Setup Backend
+
+1. Masuk ke direktori backend:
+```bash
+cd backend
+```
+
+2. Install dependencies:
+```bash
+composer install
+```
+
+3. Copy file environment:
+```bash
+cp .env.example .env
+```
+
+4. Generate application key:
+```bash
+php artisan key:generate
+```
+
+5. Konfigurasi database di file `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=gaspul_scorehub
+DB_USERNAME=root
+DB_PASSWORD=your_database_password
+```
+
+6. Jalankan migration dan seeder:
+```bash
+php artisan migrate --seed
+```
+
+7. Jalankan development server:
+```bash
+php artisan serve
+```
+
+Backend akan berjalan di `http://localhost:8000`
+
+### Setup Frontend
+
+1. Masuk ke direktori frontend:
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Konfigurasi API URL di `src/api/axios.js`:
+```javascript
+baseURL: 'http://localhost:8000/api'
+```
+
+4. Jalankan development server:
+```bash
+npm run dev
+```
+
+Frontend akan berjalan di `http://localhost:5173`
+
+## Demo Account
+
+Setelah menjalankan seeder (`php artisan migrate --seed`), akun admin berikut akan tersedia:
+
+**Admin:**
+- Username: `admin@scorehub.com`
+- Password: `123123`
+
+**Event Default:**
+- Event: HAB Kemenag 2026
+- Deskripsi: Peringatan Hari Amal Bhakti ke-80 Kementerian Agama
+- Tanggal: 3 Januari 2026
 
 ## Development
 
-### Testing
+### Backend API Endpoints
+
+API menggunakan authentication berbasis token (Laravel Sanctum).
+
+- `POST /api/login` - Login
+- `POST /api/logout` - Logout
+- `GET /api/events` - List events
+- `GET /api/teams` - List teams
+- `GET /api/matches` - List matches
+- Dan endpoint CRUD lainnya untuk management
+
+### Frontend Routes
+
+- `/` - Beranda (list events)
+- `/matches` - List pertandingan
+- `/login` - Halaman login
+- `/admin` - Dashboard admin
+- `/admin/events` - Kelola events
+- `/admin/teams` - Kelola teams
+- `/admin/matches` - Kelola pertandingan
+- `/admin/sports-types` - Kelola jenis olahraga
+- `/admin/users` - Kelola akun admin
+
+## Build Production
+
+### Backend
 ```bash
-php artisan test
+cd backend
+composer install --optimize-autoloader --no-dev
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 ```
 
-### Code Formatting
+### Frontend
 ```bash
-./vendor/bin/pint
+cd frontend
+npm run build
 ```
 
-### Clear Cache
-```bash
-php artisan config:clear
-php artisan cache:clear
-php artisan route:clear
-```
+File hasil build akan tersimpan di `frontend/dist/`
 
 ## License
 
-This project is open-sourced software.
+MIT License
+
+Copyright (c) 2025 Gaspul ScoreHub
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
