@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { matchesAPI } from '../../api/matches';
 import { eventsAPI } from '../../api/events';
 import { teamsAPI } from '../../api/teams';
@@ -176,11 +177,18 @@ export default function AdminMatches() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Kelola Pertandingan</h1>
+      <Link
+        to="/admin"
+        className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4 text-sm md:text-base min-h-11 px-2"
+      >
+        ← Kembali ke Dashboard
+      </Link>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold">Kelola Pertandingan</h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 w-full sm:w-auto min-h-11 text-sm md:text-base"
         >
           {showForm ? 'Batal' : 'Tambah Pertandingan Baru'}
         </button>
@@ -377,17 +385,17 @@ export default function AdminMatches() {
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 type="submit"
-                className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                className="flex-1 bg-green-600 text-white py-3 rounded hover:bg-green-700 min-h-11"
               >
                 {editingMatch ? 'Perbarui' : 'Buat'}
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="flex-1 bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
+                className="flex-1 bg-gray-600 text-white py-3 rounded hover:bg-gray-700 min-h-11"
               >
                 Batal
               </button>
@@ -398,17 +406,17 @@ export default function AdminMatches() {
 
       <div className="space-y-4">
         {matches.map((match) => (
-          <div key={match.id} className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="font-semibold text-lg">{match.event?.name}</h3>
+          <div key={match.id} className="bg-white p-4 md:p-6 rounded-lg shadow-md">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
+              <div className="flex-1">
+                <h3 className="font-semibold text-base md:text-lg">{match.event?.name}</h3>
                 <p className="text-sm text-gray-600">
                   {match.sports_type?.icon} {match.sports_type?.name}
                 </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                 <span
-                  className={`px-3 py-1 rounded text-sm ${getStatusColor(
+                  className={`px-3 py-1 rounded text-xs ${getStatusColor(
                     match.status
                   )}`}
                 >
@@ -416,46 +424,46 @@ export default function AdminMatches() {
                 </span>
                 <button
                   onClick={() => handleEdit(match)}
-                  className="bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700 text-sm"
+                  className="bg-yellow-600 text-white px-3 py-2 rounded hover:bg-yellow-700 text-sm min-h-9 flex-1 sm:flex-none"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(match.id)}
-                  className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm"
+                  className="bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 text-sm min-h-9 flex-1 sm:flex-none"
                 >
                   Hapus
                 </button>
               </div>
             </div>
 
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-4 gap-2">
               <div className="flex-1 text-center">
-                <p className="font-semibold text-lg">{match.team_a?.name}</p>
+                <p className="font-semibold text-sm md:text-base mb-1">{match.team_a?.name}</p>
                 {match.team_a_score !== null && (
-                  <p className="text-3xl font-bold text-blue-600">
+                  <p className="text-2xl md:text-3xl font-bold text-blue-600">
                     {match.team_a_score}
                   </p>
                 )}
               </div>
 
-              <div className="px-4 text-2xl font-bold text-gray-400">VS</div>
+              <div className="px-2 md:px-4 text-xl md:text-2xl font-bold text-gray-400">VS</div>
 
               <div className="flex-1 text-center">
-                <p className="font-semibold text-lg">{match.team_b?.name}</p>
+                <p className="font-semibold text-sm md:text-base mb-1">{match.team_b?.name}</p>
                 {match.team_b_score !== null && (
-                  <p className="text-3xl font-bold text-blue-600">
+                  <p className="text-2xl md:text-3xl font-bold text-blue-600">
                     {match.team_b_score}
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="flex justify-between text-sm text-gray-600 border-t pt-3">
-              <span>
+            <div className="flex flex-col sm:flex-row justify-between text-xs md:text-sm text-gray-600 border-t pt-3 gap-2">
+              <span className="flex items-center gap-1">
                 📅 {new Date(match.match_date).toLocaleString('id-ID')}
               </span>
-              {match.location && <span>📍 {match.location}</span>}
+              {match.location && <span className="flex items-center gap-1">📍 {match.location}</span>}
             </div>
 
             {match.notes && (

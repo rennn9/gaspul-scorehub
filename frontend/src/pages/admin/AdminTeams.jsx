@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { teamsAPI } from '../../api/teams';
 import { eventsAPI } from '../../api/events';
 
@@ -96,11 +97,18 @@ export default function AdminTeams() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Manage Teams</h1>
+      <Link
+        to="/admin"
+        className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4 text-sm md:text-base min-h-11 px-2"
+      >
+        ← Kembali ke Dashboard
+      </Link>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold">Manage Teams</h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 w-full sm:w-auto min-h-11 text-sm md:text-base"
         >
           {showForm ? 'Batal' : 'Tambah Tim Baru'}
         </button>
@@ -162,19 +170,19 @@ export default function AdminTeams() {
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 type="submit"
-                className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                className="flex-1 bg-green-600 text-white py-3 rounded hover:bg-green-700 min-h-11"
               >
                 {editingTeam ? 'Perbarui' : 'Buat'}
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="flex-1 bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
+                className="flex-1 bg-gray-600 text-white py-3 rounded hover:bg-gray-700 min-h-11"
               >
-                Cancel
+                Batal
               </button>
             </div>
           </form>
@@ -183,30 +191,30 @@ export default function AdminTeams() {
 
       <div className="space-y-4">
         {teams.map((team) => (
-          <div key={team.id} className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-1">{team.name}</h3>
+          <div key={team.id} className="bg-white p-4 md:p-6 rounded-lg shadow-md">
+            <div className="flex flex-col sm:flex-row justify-between items-start">
+              <div className="flex-1 mb-3 sm:mb-0">
+                <h3 className="text-lg md:text-xl font-semibold mb-1">{team.name}</h3>
                 <p className="text-sm text-blue-600 mb-2">
                   Event: {team.event?.name}
                 </p>
                 {team.description && (
-                  <p className="text-gray-600">{team.description}</p>
+                  <p className="text-gray-600 text-sm">{team.description}</p>
                 )}
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <button
                   onClick={() => handleEdit(team)}
-                  className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+                  className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 min-h-11 text-sm"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(team.id)}
-                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 min-h-11 text-sm"
                 >
-                  Delete
+                  Hapus
                 </button>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { eventsAPI } from '../../api/events';
 
 export default function AdminEvents() {
@@ -101,11 +102,18 @@ export default function AdminEvents() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Manage Events</h1>
+      <Link
+        to="/admin"
+        className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4 text-sm md:text-base min-h-11 px-2"
+      >
+        ← Kembali ke Dashboard
+      </Link>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold">Manage Events</h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 w-full sm:w-auto min-h-11 text-sm md:text-base"
         >
           {showForm ? 'Batal' : 'Tambah Event Baru'}
         </button>
@@ -190,19 +198,19 @@ export default function AdminEvents() {
               </label>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 type="submit"
-                className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                className="flex-1 bg-green-600 text-white py-3 rounded hover:bg-green-700 min-h-11"
               >
                 {editingEvent ? 'Perbarui' : 'Buat'}
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="flex-1 bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
+                className="flex-1 bg-gray-600 text-white py-3 rounded hover:bg-gray-700 min-h-11"
               >
-                Cancel
+                Batal
               </button>
             </div>
           </form>
@@ -211,8 +219,8 @@ export default function AdminEvents() {
 
       <div className="space-y-4">
         {events.map((event) => (
-          <div key={event.id} className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex justify-between items-start mb-4">
+          <div key={event.id} className="bg-white p-4 md:p-6 rounded-lg shadow-md">
+            <div className="flex flex-col sm:flex-row justify-between items-start mb-4">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <h3 className="text-xl font-semibold">{event.name}</h3>
@@ -239,18 +247,18 @@ export default function AdminEvents() {
                 </div>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 mt-4 sm:mt-0">
                 <button
                   onClick={() => handleEdit(event)}
-                  className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+                  className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 min-h-11 text-sm"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(event.id)}
-                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 min-h-11 text-sm"
                 >
-                  Delete
+                  Hapus
                 </button>
               </div>
             </div>

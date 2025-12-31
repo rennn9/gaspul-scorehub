@@ -97,15 +97,15 @@ export default function Matches() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Pertandingan</h1>
+      <h1 className="text-2xl md:text-3xl font-bold mb-6">Pertandingan</h1>
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow-md mb-6">
+      <div className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">Status</label>
             <select
-              className="w-full px-4 py-2 border rounded"
+              className="w-full px-4 py-3 border rounded min-h-11 text-sm md:text-base"
               value={filter.status}
               onChange={(e) => setFilter({ ...filter, status: e.target.value })}
             >
@@ -119,7 +119,7 @@ export default function Matches() {
           <div>
             <label className="block text-sm font-medium mb-1">Jenis Olahraga</label>
             <select
-              className="w-full px-4 py-2 border rounded"
+              className="w-full px-4 py-3 border rounded min-h-11 text-sm md:text-base"
               value={filter.sports_type_id}
               onChange={(e) => setFilter({ ...filter, sports_type_id: e.target.value })}
             >
@@ -142,17 +142,17 @@ export default function Matches() {
           {matches.map((match) => (
             <div
               key={match.id}
-              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition"
+              className="bg-white rounded-lg shadow-md p-4 md:p-6 hover:shadow-lg transition"
             >
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="font-semibold text-lg">{match.event?.name}</h3>
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
+                <div className="flex-1">
+                  <h3 className="font-semibold text-base md:text-lg">{match.event?.name}</h3>
                   <p className="text-sm text-gray-600">
                     {match.sports_type?.icon} {match.sports_type?.name}
                   </p>
                 </div>
                 <span
-                  className={`px-3 py-1 rounded text-sm ${getStatusColor(
+                  className={`px-3 py-1 rounded text-xs whitespace-nowrap ${getStatusColor(
                     match.status
                   )}`}
                 >
@@ -160,37 +160,37 @@ export default function Matches() {
                 </span>
               </div>
 
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center mb-4 gap-2">
                 <div className="flex-1 text-center">
-                  <p className="font-semibold text-lg">{match.team_a?.name}</p>
+                  <p className="font-semibold text-sm md:text-base mb-1">{match.team_a?.name}</p>
                   {match.team_a_score !== null && (
-                    <p className="text-3xl font-bold text-blue-600">
+                    <p className="text-2xl md:text-3xl font-bold text-blue-600">
                       {match.team_a_score}
                     </p>
                   )}
                 </div>
 
-                <div className="px-4 text-2xl font-bold text-gray-400">VS</div>
+                <div className="px-2 md:px-4 text-xl md:text-2xl font-bold text-gray-400">VS</div>
 
                 <div className="flex-1 text-center">
-                  <p className="font-semibold text-lg">{match.team_b?.name}</p>
+                  <p className="font-semibold text-sm md:text-base mb-1">{match.team_b?.name}</p>
                   {match.team_b_score !== null && (
-                    <p className="text-3xl font-bold text-blue-600">
+                    <p className="text-2xl md:text-3xl font-bold text-blue-600">
                       {match.team_b_score}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="flex justify-between text-sm text-gray-600 border-t pt-3">
-                <span>
+              <div className="flex flex-col sm:flex-row justify-between text-xs md:text-sm text-gray-600 border-t pt-3 gap-2">
+                <span className="flex items-center gap-1">
                   📅 {new Date(match.match_date).toLocaleString('id-ID')}
                 </span>
-                {match.location && <span>📍 {match.location}</span>}
+                {match.location && <span className="flex items-center gap-1">📍 {match.location}</span>}
               </div>
 
               {match.notes && (
-                <p className="mt-3 text-sm text-gray-600 italic">
+                <p className="mt-3 text-xs md:text-sm text-gray-600 italic bg-gray-50 p-2 rounded">
                   {match.notes}
                 </p>
               )}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { usersAPI } from '../../api/users';
 
 export default function AdminUsers() {
@@ -90,11 +91,18 @@ export default function AdminUsers() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Kelola Akun Admin</h1>
+      <Link
+        to="/admin"
+        className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4 text-sm md:text-base min-h-11 px-2"
+      >
+        ← Kembali ke Dashboard
+      </Link>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold">Kelola Akun Admin</h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 w-full sm:w-auto min-h-11 text-sm md:text-base"
         >
           {showForm ? 'Batal' : 'Tambah Admin Baru'}
         </button>
@@ -139,17 +147,17 @@ export default function AdminUsers() {
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 type="submit"
-                className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                className="flex-1 bg-green-600 text-white py-3 rounded hover:bg-green-700 min-h-11"
               >
                 {editingUser ? 'Perbarui' : 'Buat'}
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="flex-1 bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
+                className="flex-1 bg-gray-600 text-white py-3 rounded hover:bg-gray-700 min-h-11"
               >
                 Batal
               </button>
@@ -159,41 +167,45 @@ export default function AdminUsers() {
       )}
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Username
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Aksi
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{user.username}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button
-                    onClick={() => handleEdit(user)}
-                    className="bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700 mr-2"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                  >
-                    Hapus
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Username
+                </th>
+                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Aksi
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <td className="px-4 md:px-6 py-4">
+                    <div className="text-sm font-medium text-gray-900">{user.username}</div>
+                  </td>
+                  <td className="px-4 md:px-6 py-4">
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button
+                        onClick={() => handleEdit(user)}
+                        className="bg-yellow-600 text-white px-3 py-2 rounded hover:bg-yellow-700 text-sm min-h-9"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user.id)}
+                        className="bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 text-sm min-h-9"
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {!loading && users.length === 0 && (

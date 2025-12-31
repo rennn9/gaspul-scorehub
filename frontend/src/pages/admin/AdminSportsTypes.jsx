@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { sportsTypesAPI } from '../../api/sportsTypes';
 
 export default function AdminSportsTypes() {
@@ -82,11 +83,18 @@ export default function AdminSportsTypes() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Manage Sports Types</h1>
+      <Link
+        to="/admin"
+        className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4 text-sm md:text-base min-h-11 px-2"
+      >
+        ← Kembali ke Dashboard
+      </Link>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold">Manage Sports Types</h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 w-full sm:w-auto min-h-11 text-sm md:text-base"
         >
           {showForm ? 'Batal' : 'Tambah Jenis Olahraga Baru'}
         </button>
@@ -143,53 +151,53 @@ export default function AdminSportsTypes() {
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 type="submit"
-                className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                className="flex-1 bg-green-600 text-white py-3 rounded hover:bg-green-700 min-h-11"
               >
                 {editingSportsType ? 'Perbarui' : 'Buat'}
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="flex-1 bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
+                className="flex-1 bg-gray-600 text-white py-3 rounded hover:bg-gray-700 min-h-11"
               >
-                Cancel
+                Batal
               </button>
             </div>
           </form>
         </div>
       )}
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {sportsTypes.map((sport) => (
-          <div key={sport.id} className="bg-white p-6 rounded-lg shadow-md">
+          <div key={sport.id} className="bg-white p-4 md:p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-start mb-3">
               <div className="flex items-center gap-2">
                 {sport.icon && (
-                  <span className="text-2xl">{sport.icon}</span>
+                  <span className="text-xl md:text-2xl">{sport.icon}</span>
                 )}
-                <h3 className="text-xl font-semibold">{sport.name}</h3>
+                <h3 className="text-lg md:text-xl font-semibold">{sport.name}</h3>
               </div>
             </div>
 
             {sport.description && (
-              <p className="text-gray-600 mb-4">{sport.description}</p>
+              <p className="text-gray-600 mb-4 text-sm">{sport.description}</p>
             )}
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 onClick={() => handleEdit(sport)}
-                className="flex-1 bg-yellow-600 text-white px-3 py-2 rounded hover:bg-yellow-700 text-sm"
+                className="flex-1 bg-yellow-600 text-white px-3 py-2 rounded hover:bg-yellow-700 text-sm min-h-10"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDelete(sport.id)}
-                className="flex-1 bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 text-sm"
+                className="flex-1 bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 text-sm min-h-10"
               >
-                Delete
+                Hapus
               </button>
             </div>
           </div>
