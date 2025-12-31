@@ -1,0 +1,268 @@
+import { useEffect, useState } from 'react';
+import { eventsAPI } from '../../api/events';
+
+export default function AdminEvents() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    start_date: '',
+    end_date: '',
+    is_active: true,
+  });
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await eventsAPI.getAll();
+      setEvents(response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Prepare data - convert empty strings to null for dates
+      const submitData = {
+        ...formData,
+        start_date: formData.start_date || null,
+        end_date: formData.end_date || null,
+        description: formData.description || null,
+        is_active: Boolean(formData.is_active),
+      };
+
+      if (editingEvent) {
+        await eventsAPI.update(editingEvent.id, submitData);
+        alert('Event berhasil diperbarui!');
+      } else {
+        await eventsAPI.create(submitData);
+        alert('Event berhasil dibuat!');
+      }
+      resetForm();
+      fetchEvents();
+    } catch (error) {
+      const errorMessage = error.response?.data?.message ||
+                          error.response?.data?.errors ?
+                          JSON.stringify(error.response.data.errors) :
+                          'Gagal menyimpan event';
+      alert(errorMessage);
+      console.error('Error detail:', error.response?.data);
+    }
+  };
+
+  const handleEdit = (event) => {
+    setEditingEvent(event);
+    setFormData({
+      name: event.name,
+      description: event.description || '',
+      start_date: event.start_date || '',
+      end_date: event.end_date || '',
+      is_active: event.is_active,
+    });
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus event ini?')) return;
+
+    try {
+      await eventsAPI.delete(id);
+      alert('Event berhasil dihapus!');
+      fetchEvents();
+    } catch (error) {
+      alert('Error deleting event');
+      console.error(error);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      start_date: '',
+      end_date: '',
+      is_active: true,
+    });
+    setEditingEvent(null);
+    setShowForm(false);
+  };
+
+  if (loading) return <div className="p-8">Memuat...</div>;
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Manage Events</h1>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          {showForm ? 'Batal' : 'Tambah Event Baru'}
+        </button>
+      </div>
+
+      {showForm && (
+        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+          <h2 className="text-xl font-semibold mb-4">
+            {editingEvent ? 'Edit Event' : 'Buat Event Baru'}
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Event Name *
+              </label>
+              <input
+                type="text"
+                required
+                className="w-full px-4 py-2 border rounded"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Description
+              </label>
+              <textarea
+                className="w-full px-4 py-2 border rounded"
+                rows="3"
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  className="w-full px-4 py-2 border rounded"
+                  value={formData.start_date}
+                  onChange={(e) =>
+                    setFormData({ ...formData, start_date: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  className="w-full px-4 py-2 border rounded"
+                  value={formData.end_date}
+                  onChange={(e) =>
+                    setFormData({ ...formData, end_date: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="is_active"
+                className="mr-2"
+                checked={formData.is_active}
+                onChange={(e) =>
+                  setFormData({ ...formData, is_active: e.target.checked })
+                }
+              />
+              <label htmlFor="is_active" className="text-sm font-medium">
+                Active Event
+              </label>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
+              >
+                {editingEvent ? 'Perbarui' : 'Buat'}
+              </button>
+              <button
+                type="button"
+                onClick={resetForm}
+                className="flex-1 bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        {events.map((event) => (
+          <div key={event.id} className="bg-white p-6 rounded-lg shadow-md">
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-xl font-semibold">{event.name}</h3>
+                  {event.is_active ? (
+                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                      Active
+                    </span>
+                  ) : (
+                    <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                      Inactive
+                    </span>
+                  )}
+                </div>
+                <p className="text-gray-600 mb-2">{event.description}</p>
+                {event.start_date && (
+                  <p className="text-sm text-gray-500">
+                    📅 {new Date(event.start_date).toLocaleDateString()} -{' '}
+                    {new Date(event.end_date).toLocaleDateString()}
+                  </p>
+                )}
+                <div className="flex gap-4 mt-2 text-sm text-gray-600">
+                  <span>{event.teams?.length || 0} Tim</span>
+                  <span>{event.matches?.length || 0} Pertandingan</span>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleEdit(event)}
+                  className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(event.id)}
+                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {events.length === 0 && (
+        <p className="text-center text-gray-500 py-8">
+          No events found. Create your first event!
+        </p>
+      )}
+    </div>
+  );
+}

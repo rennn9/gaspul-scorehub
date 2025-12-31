@@ -1,0 +1,174 @@
+import { useEffect, useState } from 'react';
+import { matchesAPI } from '../../api/matches';
+
+export default function AdminMatches() {
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [editingMatch, setEditingMatch] = useState(null);
+
+  useEffect(() => {
+    fetchMatches();
+  }, []);
+
+  const fetchMatches = async () => {
+    try {
+      const response = await matchesAPI.getAll();
+      setMatches(response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateScore = async (matchId, scores) => {
+    try {
+      await matchesAPI.updateScore(matchId, scores);
+      fetchMatches();
+      setEditingMatch(null);
+      alert('Skor berhasil diperbarui!');
+    } catch (error) {
+      alert('Gagal memperbarui skor');
+      console.error(error);
+    }
+  };
+
+  if (loading) return <div className="p-8">Memuat...</div>;
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Manage Matches</h1>
+
+      <div className="space-y-4">
+        {matches.map((match) => (
+          <div key={match.id} className="bg-white p-6 rounded-lg shadow-md">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="font-semibold">{match.event?.name}</h3>
+                <p className="text-sm text-gray-600">
+                  {match.sports_type?.name}
+                </p>
+              </div>
+              <span className={`px-3 py-1 rounded text-sm ${
+                match.status === 'Selesai' ? 'bg-gray-100' :
+                match.status === 'Berlangsung' ? 'bg-green-100' : 'bg-blue-100'
+              }`}>
+                {match.status}
+              </span>
+            </div>
+
+            {editingMatch === match.id ? (
+              <ScoreEditor
+                match={match}
+                onSave={handleUpdateScore}
+                onCancel={() => setEditingMatch(null)}
+              />
+            ) : (
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex-1 text-center">
+                    <p className="font-semibold">{match.team_a?.name}</p>
+                    <p className="text-2xl font-bold text-blue-600">
+                      {match.team_a_score ?? '-'}
+                    </p>
+                  </div>
+                  <div className="px-4 text-xl">VS</div>
+                  <div className="flex-1 text-center">
+                    <p className="font-semibold">{match.team_b?.name}</p>
+                    <p className="text-2xl font-bold text-blue-600">
+                      {match.team_b_score ?? '-'}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setEditingMatch(match.id)}
+                  className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                >
+                  Update Score
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ScoreEditor({ match, onSave, onCancel }) {
+  const [scores, setScores] = useState({
+    team_a_score: match.team_a_score ?? 0,
+    team_b_score: match.team_b_score ?? 0,
+    status: match.status,
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(match.id, scores);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            {match.team_a?.name} Score
+          </label>
+          <input
+            type="number"
+            min="0"
+            className="w-full px-4 py-2 border rounded"
+            value={scores.team_a_score}
+            onChange={(e) =>
+              setScores({ ...scores, team_a_score: parseInt(e.target.value) })
+            }
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            {match.team_b?.name} Score
+          </label>
+          <input
+            type="number"
+            min="0"
+            className="w-full px-4 py-2 border rounded"
+            value={scores.team_b_score}
+            onChange={(e) =>
+              setScores({ ...scores, team_b_score: parseInt(e.target.value) })
+            }
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">Status</label>
+        <select
+          className="w-full px-4 py-2 border rounded"
+          value={scores.status}
+          onChange={(e) => setScores({ ...scores, status: e.target.value })}
+        >
+          <option value="scheduled">Scheduled</option>
+          <option value="ongoing">Ongoing</option>
+          <option value="finished">Finished</option>
+        </select>
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="flex-1 bg-gray-600 text-white py-2 rounded hover:bg-gray-700"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+}

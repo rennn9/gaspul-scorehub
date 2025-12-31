@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(composer create-project:*)",
+      "Bash(composer require:*)",
+      "Bash(php artisan make:migration:*)",
+      "Bash(php artisan make:model:*)",
+      "Bash(php artisan install:api:*)",
+      "Bash(php artisan:*)",
+      "Bash(php artisan make:*)",
+      "Bash(mysql:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(npm run dev:*)",
+      "Bash(wc:*)",
+      "Bash(cat:*)"
+    ]
+  }
+}
